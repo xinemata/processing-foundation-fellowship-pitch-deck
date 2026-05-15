@@ -1,0 +1,346 @@
+/* =====================================================================
+   Processing Foundation — Colors & Type
+   ----------------------------------------------------------------------
+   The brand is loud, bright, geometric, and proudly hand-curated.
+   Space Grotesk is the workhorse for everything; Inter shows up only
+   for very large display lockups (200px+ "TYPOGRAPHY", "COLORS").
+   Color is used confidently: full-bleed deep purple, hot pink, electric
+   blue. Imagery and shapes lay diagonally across compositions.
+   ====================================================================== */
+
+/* ---------- Fonts (Google Fonts; substitutes for the licensed cuts in the .fig) ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Open+Sans+Condensed:wght@300;700&display=swap');
+
+:root {
+  /* =================================================================
+     COLOR — PRIMITIVES
+     Sourced from the Visual-Design-System page of the Figma. Names
+     map to the brand's product-color associations: purple = Foundation,
+     blue = Processing (Java), pink = p5.js, teal = Processing Python.
+     ================================================================= */
+
+  /* Foundation — Purple family */
+  --pf-purple-900: #29005A;        /* deep label */
+  --pf-purple-800: #5501A4;        /* PRIMARY brand purple — most common */
+  --pf-purple-600: #9C4BFF;        /* mid purple, accent shapes */
+  --pf-purple-400: #D4B2FE;        /* lavender, large shapes & gradients */
+  --pf-purple-200: #EDDFFF;        /* pale lilac surfaces */
+  --pf-purple-100: #F5EEFF;        /* tinted background wash */
+  --pf-purple-tint: rgba(212,178,254,0.13);  /* fade-out tint for gradients */
+
+  /* Processing (Java) — Blue family */
+  --pf-blue-900: #1E2A67;          /* navy text */
+  --pf-blue-800: #1F34AB;          /* deep blue */
+  --pf-blue-700: #0251C8;
+  --pf-blue-600: #0468FF;          /* PRIMARY processing blue */
+  --pf-blue-500: #508BFF;
+  --pf-blue-400: #85AEFF;
+  --pf-blue-200: #DAEBFF;
+  --pf-blue-100: #F2F8FF;
+  --pf-blue-tint: rgba(242,248,255,0.31);
+
+  /* p5.js — Pink/Magenta family */
+  --pf-pink-900: #9F0C37;
+  --pf-pink-700: #E0324D;
+  --pf-pink-600: #FF4077;          /* PRIMARY p5.js pink */
+  --pf-pink-500: #FD9DB9;
+  --pf-pink-300: #FFD7E2;
+  --pf-pink-200: #FFECF1;
+  --pf-magenta: #D72FCD;           /* used as p5 stem accent */
+
+  /* Processing Python — Teal family */
+  --pf-teal-900: #104B58;
+  --pf-teal-700: #2D9E97;
+  --pf-teal-500: #76C7C2;
+  --pf-teal-300: #CFEFED;
+  --pf-green-200: #E2F2D8;         /* (paired neutral) */
+
+  /* Warm accent (used in fundraiser title cards / orange flag) */
+  --pf-orange: #E99538;
+
+  /* Neutrals */
+  --pf-black: #000000;
+  --pf-ink: #111111;
+  --pf-gray-900: #1A1A1A;
+  --pf-gray-700: #3B3B3B;
+  --pf-gray-500: #6B6B6B;
+  --pf-gray-300: #D9D9D9;
+  --pf-gray-200: #DCDCDC;
+  --pf-gray-100: #F5F5F5;          /* canonical light bg */
+  --pf-white: #FFFFFF;
+
+  /* "Safe area" pink — printer/template guide color, not for production */
+  --pf-safearea-pink: #FFDEDE;
+
+  /* =================================================================
+     COLOR — SEMANTIC TOKENS
+     Defaults to the Foundation (purple) brand. Override --brand-* on
+     a wrapping element to retheme a sub-tree to Processing / p5 / Python.
+     ================================================================= */
+  --brand: var(--pf-purple-800);
+  --brand-strong: var(--pf-purple-900);
+  --brand-accent: var(--pf-purple-600);
+  --brand-soft: var(--pf-purple-400);
+  --brand-surface: var(--pf-purple-200);
+  --brand-wash: var(--pf-purple-100);
+  --brand-on-brand: var(--pf-white);
+
+  --fg: var(--pf-black);
+  --fg-muted: var(--pf-gray-700);
+  --fg-subtle: var(--pf-gray-500);
+  --fg-on-brand: var(--pf-white);
+  --fg-inverted: var(--pf-white);
+
+  --bg: var(--pf-white);
+  --bg-canvas: var(--pf-gray-100);   /* default Instagram-template canvas */
+  --bg-elevated: var(--pf-white);
+  --bg-brand: var(--pf-purple-800);
+  --bg-brand-soft: var(--pf-purple-200);
+
+  --border: rgba(0,0,0,0.1);
+  --border-strong: var(--pf-black);
+  --border-dashed-brand: var(--pf-purple-600);
+
+  /* =================================================================
+     TYPOGRAPHY — FAMILIES
+     ================================================================= */
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mega: 'Inter', 'Space Grotesk', sans-serif;  /* 200px+ section markers */
+  --font-condensed: 'Open Sans Condensed', 'Space Grotesk', sans-serif; /* rare, decorative */
+  --font-mono: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  /* =================================================================
+     TYPOGRAPHY — SIZE SCALE
+     Mirrors the named scales found in /Video-Overlays/Typography and
+     across the Social Media templates. Pixel values match the .fig.
+     ================================================================= */
+  --fs-mega: 200px;        /* Section markers ("COLORS", "TYPOGRAPHY") */
+  --fs-display-1: 190px;   /* Headline */
+  --fs-display-2: 140px;   /* Section heading on posts ("safe spaces") */
+  --fs-display-3: 120px;   /* Headline2 */
+  --fs-display-4: 90px;    /* Questions / social share large */
+  --fs-display-5: 65px;    /* Title — used in post headlines */
+  --fs-h1: 60px;
+  --fs-h2: 48px;
+  --fs-h3: 45px;
+  --fs-h4: 36px;
+  --fs-h5: 34px;
+  --fs-h6: 30px;           /* Logo lock-up wordmark */
+  --fs-lg: 28px;
+  --fs-base: 24px;         /* Body — the workhorse on social */
+  --fs-sm: 20px;
+  --fs-xs: 18px;           /* social share x-small */
+  --fs-2xs: 14px;
+
+  /* =================================================================
+     TYPOGRAPHY — LINE HEIGHT, WEIGHT, TRACKING
+     The .fig uses 100% line-height on display, 125% on body.
+     Almost everything sits at +1% letter-spacing.
+     ================================================================= */
+  --lh-tight: 1;
+  --lh-snug: 1.05;
+  --lh-normal: 1.25;
+  --lh-relaxed: 1.5;
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;        /* DEFAULT for display & buttons */
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --tracking-tight: -0.01em;
+  --tracking-base: 0.01em; /* canonical brand tracking */
+  --tracking-wide: 0.04em;
+
+  /* =================================================================
+     SPACING, RADII, SHADOWS, BORDERS
+     ================================================================= */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 135px;       /* "safe area" margin on IG posts */
+
+  --radius-xs: 2px;        /* sections, large frames */
+  --radius-sm: 5px;        /* logo art-board outlines */
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;   /* labels, buttons, chips — VERY common */
+
+  /* Borders are usually thin solid or 1px dashed in brand color */
+  --stroke-hair: 1px;
+  --stroke-thin: 2px;
+  --stroke-thick: 4px;
+  --stroke-poster: 10px;
+
+  /* Shadows are RARELY used — designs lean on flat color blocks.
+     One subtle elevation token is provided for component prototypes. */
+  --shadow-none: none;
+  --shadow-soft: 0 4px 16px rgba(85,1,164,0.08);
+  --shadow-pop:  0 12px 40px rgba(85,1,164,0.18);
+
+  /* =================================================================
+     LAYERED GRADIENTS — building blocks for the diagonal overlays
+     ================================================================= */
+  --grad-purple-fade: linear-gradient(rgb(212,178,254) 0%, rgba(212,178,254,0.13) 100%);
+  --grad-blue-fade:   linear-gradient(rgb(218,235,255) 0%, rgba(242,248,255,0.31) 100%);
+  --grad-lilac-fade:  linear-gradient(rgb(237,223,255) 0%, rgba(237,223,255,0.11) 100%);
+  --grad-pink-fade:   linear-gradient(rgb(255,215,226) 0%, rgba(255,215,226,0.13) 100%);
+}
+
+/* =====================================================================
+   BRAND THEME OVERRIDES — apply to any subtree
+   <div data-brand="processing">    -> blue
+   <div data-brand="p5">             -> pink
+   <div data-brand="python">         -> teal
+   <div data-brand="foundation">     -> purple (default)
+   ===================================================================== */
+[data-brand="processing"] {
+  --brand: var(--pf-blue-600);
+  --brand-strong: var(--pf-blue-900);
+  --brand-accent: var(--pf-blue-500);
+  --brand-soft: var(--pf-blue-400);
+  --brand-surface: var(--pf-blue-200);
+  --brand-wash: var(--pf-blue-100);
+}
+[data-brand="p5"] {
+  --brand: var(--pf-pink-600);
+  --brand-strong: var(--pf-pink-900);
+  --brand-accent: var(--pf-pink-700);
+  --brand-soft: var(--pf-pink-500);
+  --brand-surface: var(--pf-pink-300);
+  --brand-wash: var(--pf-pink-200);
+}
+[data-brand="python"] {
+  --brand: var(--pf-teal-700);
+  --brand-strong: var(--pf-teal-900);
+  --brand-accent: var(--pf-teal-500);
+  --brand-soft: var(--pf-teal-500);
+  --brand-surface: var(--pf-teal-300);
+  --brand-wash: var(--pf-green-200);
+}
+
+/* =====================================================================
+   SEMANTIC TEXT STYLES
+   Use these directly OR via the .pf-* utility classes below.
+   ===================================================================== */
+.pf-mega,
+.pf-section-marker {
+  font-family: var(--font-mega);
+  font-weight: var(--fw-regular);
+  font-size: clamp(64px, 9vw, var(--fs-mega));
+  line-height: var(--lh-tight);
+  letter-spacing: 0;
+  color: var(--fg);
+}
+
+.pf-display,
+h1.pf, .pf-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: clamp(56px, 8vw, var(--fs-display-1));
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-base);
+  color: var(--brand);
+}
+
+.pf-display-2, h2.pf, .pf-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: clamp(42px, 6vw, var(--fs-display-3));
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-base);
+  color: var(--brand);
+}
+
+.pf-headline, .pf-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: clamp(32px, 4vw, var(--fs-h2));
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-base);
+  color: var(--brand);
+}
+
+.pf-title, .pf-h4 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-base);
+  color: var(--brand);
+}
+
+.pf-subtitle, .pf-h5 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h6);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--tracking-base);
+  color: var(--brand);
+}
+
+.pf-body, p.pf, .pf-p {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--tracking-base);
+  color: var(--fg);
+  text-wrap: pretty;
+}
+
+.pf-body-bold {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-h5);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--tracking-base);
+  color: var(--brand);
+}
+
+.pf-caption {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--tracking-base);
+  color: var(--fg-muted);
+}
+
+.pf-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.pf-code, code.pf {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  background: var(--brand-wash);
+  color: var(--brand-strong);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-xs);
+}
+
+/* Tight defaults so reset-style pages still feel branded */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body.pf-body-default {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--tracking-base);
+  color: var(--fg);
+  background: var(--bg);
+  margin: 0;
+}
