@@ -69,6 +69,6 @@
   } else {
     initAll();
   }
-  setTimeout(initAll, 100);
-  setTimeout(initAll, 600);
+  setTimeout(initAll, 5000);
+  setTimeout(initAll, 30000);
 })();
