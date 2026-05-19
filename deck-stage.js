@@ -148,7 +148,7 @@
     .overlay {
       position: fixed;
       left: 50%;
-      bottom: 22px;
+      bottom: calc(22px + env(safe-area-inset-bottom, 0px));
       transform: translate(-50%, 6px) scale(0.92);
       filter: blur(6px);
       display: flex;
@@ -283,6 +283,51 @@
     :host([no-rail]) .rail,
     :host([noscale]) .rail { display: none; }
     .rail[data-presenting] { display: none; }
+    @media (max-width: 900px) {
+      .rail, .rail-resize { display: none !important; }
+    }
+
+    /* Rotate-to-landscape hint for phone portrait. Non-blocking — the deck
+       still works, this just nudges users for a better view. Dismissed via
+       the close button; auto-hidden once orientation changes to landscape. */
+    .rotate-hint {
+      position: fixed;
+      left: 50%;
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 32px);
+      padding: 10px 14px 10px 14px;
+      background: rgba(0,0,0,0.88);
+      color: #fff;
+      border-radius: 999px;
+      font-size: 13px;
+      line-height: 1.3;
+      z-index: 2147483050;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+    }
+    .rotate-hint svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+    .rotate-hint button {
+      appearance: none;
+      background: rgba(255,255,255,0.14);
+      border: 0;
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .rotate-hint button:hover { background: rgba(255,255,255,0.22); }
+    @media (max-width: 700px) and (orientation: portrait) {
+      .rotate-hint:not([data-dismissed]) { display: flex; }
+    }
     /* User-driven show/hide (the TweaksPanel toggle) slides instead of
        popping. Transitions are gated on :host([data-rail-anim]) — set only
        for the 200ms around the toggle — so window-resize and rail-width
@@ -963,7 +1008,20 @@
         this._deleteSlide(i);
       });
 
-      this._root.append(style, rail, resize, stage, tapzones, overlay, menu, confirm);
+      const rotateHint = document.createElement('div');
+      rotateHint.className = 'rotate-hint export-hidden';
+      rotateHint.setAttribute('role', 'note');
+      rotateHint.setAttribute('data-noncommentable', '');
+      rotateHint.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3l3 3-3 3"/><path d="M5 11V9a4 4 0 014-4h8"/><path d="M10 21l-3-3 3-3"/><path d="M19 13v2a4 4 0 01-4 4H7"/></svg>
+        <span>Rotate for the best view</span>
+        <button type="button" aria-label="Dismiss">&times;</button>
+      `;
+      rotateHint.querySelector('button').addEventListener('click', () => {
+        rotateHint.setAttribute('data-dismissed', '');
+      });
+
+      this._root.append(style, rail, resize, stage, tapzones, overlay, rotateHint, menu, confirm);
       this._canvas = canvas;
       this._slot = slot;
       this._overlay = overlay;
@@ -1174,6 +1232,10 @@
       // corrects it.
       if (!this._railEnabled || !this._railVisible || this.hasAttribute('no-rail')
           || this.hasAttribute('noscale') || this._presenting) return 0;
+      // Match the @media (max-width: 900px) rule that hides the rail on
+      // narrow viewports — keep _fit's scale calc in sync so the slide
+      // gets the full width on phones/tablets.
+      if (window.innerWidth <= 900) return 0;
       return this._railPx || 0;
     }
 
