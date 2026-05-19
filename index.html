@@ -8,6 +8,27 @@
 <script src="image-slot.js"></script>
 <script src="slideshow.js"></script>
 <script src="deck-stage.js"></script>
+<script>
+  (function () {
+    var VIDEO_HOSTS = /youtube\.com|youtube-nocookie\.com|youtu\.be|vimeo\.com/;
+    function stopVideosIn(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('iframe').forEach(function (f) {
+        var src = f.getAttribute('src') || '';
+        if (VIDEO_HOSTS.test(src)) f.setAttribute('src', src);
+      });
+      slide.querySelectorAll('video, audio').forEach(function (m) {
+        try { m.pause(); } catch (e) {}
+      });
+    }
+    document.addEventListener('slidechange', function (e) {
+      var d = e.detail || {};
+      if (d.previousSlide && d.previousSlide !== d.slide) {
+        stopVideosIn(d.previousSlide);
+      }
+    });
+  })();
+</script>
 </head>
 <body>
 

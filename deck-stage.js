@@ -844,11 +844,37 @@
         </button>
         <span class="divider"></span>
         <button class="btn reset" type="button" aria-label="Reset to first slide" title="Reset (R)">Reset<span class="kbd">R</span></button>
+        <span class="divider"></span>
+        <button class="btn fullscreen" type="button" aria-label="Enter fullscreen" title="Fullscreen (Esc to exit)">
+          <svg class="fs-enter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6V3h3M13 6V3h-3M3 10v3h3M13 10v3h-3"/></svg>
+          <svg class="fs-exit" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M6 3v3H3M10 3v3h3M6 13v-3H3M10 13v-3h3"/></svg>
+        </button>
       `;
 
       overlay.querySelector('.prev').addEventListener('click', () => this._advance(-1, 'click'));
       overlay.querySelector('.next').addEventListener('click', () => this._advance(1, 'click'));
       overlay.querySelector('.reset').addEventListener('click', () => this._go(0, 'click'));
+      const fsBtn = overlay.querySelector('.fullscreen');
+      const fsEnter = fsBtn.querySelector('.fs-enter');
+      const fsExit = fsBtn.querySelector('.fs-exit');
+      fsBtn.addEventListener('click', () => {
+        const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fsEl) {
+          (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        } else {
+          const root = document.documentElement;
+          (root.requestFullscreen || root.webkitRequestFullscreen).call(root);
+        }
+      });
+      const syncFsIcon = () => {
+        const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        fsEnter.style.display = on ? 'none' : 'block';
+        fsExit.style.display = on ? 'block' : 'none';
+        fsBtn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Enter fullscreen');
+        fsBtn.setAttribute('title', on ? 'Exit fullscreen (Esc)' : 'Fullscreen (Esc to exit)');
+      };
+      document.addEventListener('fullscreenchange', syncFsIcon);
+      document.addEventListener('webkitfullscreenchange', syncFsIcon);
 
       // Thumbnail rail + context menu. Thumbnails are populated in
       // _renderRail() after _collectSlides().

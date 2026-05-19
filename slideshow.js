@@ -11,7 +11,7 @@
     const captionEl = el.querySelector('.ps-caption');
     const prev = el.querySelector('.ps-nav.prev');
     const next = el.querySelector('.ps-nav.next');
-    const autoplay = parseInt(el.dataset.autoplay) || 0;
+    const autoplay = 0;
     if (slides.length === 0) return;
 
     let cur = 0;
