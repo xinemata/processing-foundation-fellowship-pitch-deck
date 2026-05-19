@@ -337,7 +337,7 @@ deck-stage > section {
 .ask-amount {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 260px;
+  font-size: 200px;
   line-height: 0.85;
   letter-spacing: -0.012em;
   color: var(--pf-purple-800);
