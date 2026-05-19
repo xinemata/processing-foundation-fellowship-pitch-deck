@@ -1,7 +1,12 @@
-/* slideshow.js — autoplay photo slideshow with prev/next + dot controls
-   + a synced caption strip that updates from each slide's data-caption.
+/* slideshow.js — photo slideshow with prev/next + dot controls and a synced
+   caption strip. Autoplay (7s per photo) starts when the deck navigates to
+   the slide containing the slideshow, and pauses when the user navigates
+   away. Hovering the slideshow also pauses on desktop.
 */
 (() => {
+  const AUTOPLAY_MS = 7000;
+  const instances = new Set();
+
   function init(el) {
     if (el.__pf_slideshow_init) return;
     el.__pf_slideshow_init = true;
@@ -11,12 +16,12 @@
     const captionEl = el.querySelector('.ps-caption');
     const prev = el.querySelector('.ps-nav.prev');
     const next = el.querySelector('.ps-nav.next');
-    const autoplay = 0;
     if (slides.length === 0) return;
 
     let cur = 0;
     let timer = null;
     let hovered = false;
+    let active = false;
 
     function go(i) {
       cur = (i + slides.length) % slides.length;
@@ -30,8 +35,8 @@
     }
     function start() {
       stop();
-      if (autoplay > 0 && !hovered) {
-        timer = setInterval(() => go(cur + 1), autoplay);
+      if (active && !hovered && slides.length > 1) {
+        timer = setInterval(() => go(cur + 1), AUTOPLAY_MS);
       }
     }
     function stop() {
@@ -56,19 +61,51 @@
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); reset(); }
     });
 
+    el.__pf_slideshow_activate = () => { active = true; start(); };
+    el.__pf_slideshow_deactivate = () => { active = false; stop(); };
+
+    instances.add(el);
     go(0);
-    start();
   }
 
   function initAll() {
     document.querySelectorAll('.photo-slideshow').forEach(init);
   }
 
+  // Slide-level activation: deck-stage emits a 'slidechange' CustomEvent
+  // when navigation happens. Activate any slideshow inside the new slide,
+  // deactivate slideshows inside the slide being left.
+  function activateInSlide(slide) {
+    if (!slide) return;
+    slide.querySelectorAll('.photo-slideshow').forEach(el => {
+      if (el.__pf_slideshow_activate) el.__pf_slideshow_activate();
+    });
+  }
+  function deactivateInSlide(slide) {
+    if (!slide) return;
+    slide.querySelectorAll('.photo-slideshow').forEach(el => {
+      if (el.__pf_slideshow_deactivate) el.__pf_slideshow_deactivate();
+    });
+  }
+  function activateCurrent() {
+    // Initial activation: whichever slide currently has data-deck-active.
+    const cur = document.querySelector('[data-deck-active]');
+    activateInSlide(cur);
+  }
+
+  document.addEventListener('slidechange', e => {
+    const d = e.detail || {};
+    if (d.previousSlide && d.previousSlide !== d.slide) deactivateInSlide(d.previousSlide);
+    if (d.slide) activateInSlide(d.slide);
+  });
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener('DOMContentLoaded', () => { initAll(); activateCurrent(); });
   } else {
     initAll();
+    activateCurrent();
   }
-  setTimeout(initAll, 5000);
-  setTimeout(initAll, 30000);
+  // Late-mount safety nets (deck-stage may upgrade after our first pass).
+  setTimeout(() => { initAll(); activateCurrent(); }, 1000);
+  setTimeout(() => { initAll(); activateCurrent(); }, 5000);
 })();
